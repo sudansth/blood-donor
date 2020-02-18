@@ -1,15 +1,41 @@
 import React from 'react';
-import { createBottomTabNavigator, createAppContainer } from "react-navigation";
+import { 
+  createBottomTabNavigator,
+  createStackNavigator,
+  createAppContainer 
+} from "react-navigation";
 import HomeScreen from './HomeScreen/HomeScreen';
 import SearchScreen from './SearchScreen/SearchScreen';
 import SettingsScreen from './SettingsScreen/SettingsScreen';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import DetailsScreen from './DetailsScreen/DetailsScreen';
+import AddScreen from './AddScreen';
+
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
+// creating stack of the possible navigations from Home Screen
+const HomeStack = createStackNavigator({
+  Home: HomeScreen,
+  Details: DetailsScreen,
+  Add: AddScreen,
+});
+
+// Removing tab bar from the Details Screen
+HomeStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const TabNavigator = createBottomTabNavigator(
   {
-    Home: HomeScreen,
+    Home: HomeStack,
     Search: SearchScreen,
-    Settings: SettingsScreen
+    Settings: SettingsScreen,
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
