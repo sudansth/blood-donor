@@ -5,7 +5,7 @@ const SettingsScreen = (props) => {
 
   return (
     <View>
-      <Text>Settings Screen</Text>
+      <Text style={{ fontSize: 22 }}>Settings Screen</Text>
     </View>
   )
 };

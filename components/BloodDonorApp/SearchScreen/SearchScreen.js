@@ -5,7 +5,7 @@ const SearchScreen = (props) => {
 
   return (
     <View>
-      <Text>Search Screen</Text>
+      <Text style={{fontSize: 22}}>Search Screen</Text>
     </View>
   )
 };
