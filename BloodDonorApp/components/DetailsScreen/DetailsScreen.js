@@ -1,35 +1,29 @@
-import React, { useState } from 'react';
-import {
-  View, 
-  Text, 
-  Image,
-  StyleSheet,
-  Button
-} from 'react-native';
-import { font } from '../../../utils/font';
-import color from '../../../utils/color';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import React, { useState } from "react";
+import { View, Text, Image, StyleSheet, Button } from "react-native";
+import { font } from "../../utils/font";
+import color from "../../utils/color";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 class DetailsScreen extends React.Component {
   static navigationOptions = {
     // header: null,
     tabBarVisible: true
-  }
+  };
 
   handleOkButtonPress = () => {
-    console.log('OK Pressed')
-  }
+    console.log("OK Pressed");
+  };
 
   render() {
     const { navigation } = this.props;
-    const itemId = navigation.getParam('itemId', 'NO-ID');
-    const itemObj = navigation.getParam('item', null);
+    const itemId = navigation.getParam("itemId", "NO-ID");
+    const itemObj = navigation.getParam("item", null);
 
     return (
       <View style={styles.DetailsScreen}>
-        <Image 
-          style={{ width: '100%', height: 200 }}
-          source={require('../../../assets/no-image.png')}
+        <Image
+          style={{ width: "100%", height: 200 }}
+          source={require("../../../assets/no-image.png")}
         />
         <View style={styles.infoWrapper}>
           <Text style={styles.title}>{itemObj.title}</Text>
@@ -37,26 +31,19 @@ class DetailsScreen extends React.Component {
           <Text style={[styles.baseStyles, styles.description]}>
             {itemObj.description}
           </Text>
-          <View 
-            style={[styles.baseStyles,
-              styles.itemSeperation,
-              styles.date
-            ]}
-          >
+          <View style={[styles.baseStyles, styles.itemSeperation, styles.date]}>
             <View>
-              <FontAwesome5 name='calendar-alt' size={18} light />
+              <FontAwesome5 name="calendar-alt" size={18} light />
             </View>
             <View style={styles.itemSeperation__rightItem}>
               <Text>{itemObj.date}</Text>
             </View>
           </View>
-          <View style={[styles.baseStyles,
-            styles.itemSeperation,
-            styles.location
-            ]}
+          <View
+            style={[styles.baseStyles, styles.itemSeperation, styles.location]}
           >
             <View style={styles.itemSeperation__leftItem}>
-              <FontAwesome5 name='map-marker-alt' size={20} light />
+              <FontAwesome5 name="map-marker-alt" size={20} light />
             </View>
             <View style={styles.itemSeperation__rightItem}>
               <Text style={styles.baseStyles}>{itemObj.fullAddress}</Text>
@@ -64,14 +51,14 @@ class DetailsScreen extends React.Component {
           </View>
         </View>
         <View style={styles.okButton__container}>
-          <Button 
-            color={color.APP_BRAND_DARK} 
+          <Button
+            color={color.APP_BRAND_DARK}
             title="I am in"
             onPress={this.handleOkButtonPress}
           />
         </View>
       </View>
-    )
+    );
   }
 }
 
@@ -80,26 +67,26 @@ export default DetailsScreen;
 const styles = StyleSheet.create({
   DetailsScreen: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: "column"
   },
   infoWrapper: {
     marginTop: 10,
     marginLeft: 15,
-    marginRight: 15,
+    marginRight: 15
   },
   baseStyles: {
     fontSize: font.MEDIUM,
     marginTop: 10
   },
   title: {
-    fontSize: font.XXL,
+    fontSize: font.XXL
   },
   description: {
     fontSize: font.LARGE
   },
   itemSeperation: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row"
   },
   itemSeperation__rightItem: {
     marginLeft: 10
@@ -111,9 +98,9 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   okButton__container: {
-    width: '100%',
-    position: 'absolute',
-    top: '90%',
-    alignItems: 'center'
-  },
-})
+    width: "100%",
+    position: "absolute",
+    top: "90%",
+    alignItems: "center"
+  }
+});
