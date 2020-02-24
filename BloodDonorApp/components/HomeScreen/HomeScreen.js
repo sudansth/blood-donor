@@ -10,158 +10,9 @@ import {
 } from "react-native";
 import color from "../../utils/color";
 import { font } from "../../utils/font.js";
-
-const eventList = [
-  {
-    id: "100",
-    title: "Blood Donation Camp1",
-    organiser: "Lions club of Butwal",
-    location: "Butwal",
-    fullAddress: "Lions Club, Pari Butwal, Butwal",
-    description: "Calling for all blood donors",
-    date: "23-04-2019"
-  },
-  {
-    id: "101",
-    title: "A+ Blood required urgently",
-    organiser: "Requester Name",
-    location: "Bhairahawa",
-    fullAddress: "UCMS Hospital, Buddha Path, Bhairahawa",
-    description: "Calling for all blood donors",
-    date: "24-04-2019"
-  },
-  {
-    id: "102",
-    title:
-      "Blood Donation Camp2 Long Title To Test the Max length of the title1 title2 title3 title4",
-    organiser: "Lions club of Bhairahawa",
-    location: "Bhairahawa",
-    fullAddress: "UCMS Hospital, Buddha Path, Bhairahawa",
-    description: "Calling for all blood donors",
-    date: "26-05-2019"
-  },
-  {
-    id: "103",
-    title: "Blood Donation Camp1",
-    organiser: "Lions club of Butwal",
-    location: "Butwal",
-    fullAddress: "Lions Club, Pari Butwal, Butwal",
-    description: "Calling for all blood donors",
-    date: "23-04-2019"
-  },
-  {
-    id: "104",
-    title: "Blood Donation Camp2",
-    organiser: "Lions club of Saljhandi",
-    location: "Saljhandi",
-    description: "Calling for all blood donors",
-    date: "24-04-2019"
-  },
-  {
-    id: "105",
-    title: "Blood Donation Camp3",
-    organiser: "Lions club of Bhairahawa",
-    location: "Bhairahawa",
-    description: "Calling for all blood donors",
-    date: "26-05-2019"
-  },
-  {
-    id: "106",
-    title: "Blood Donation Camp1",
-    organiser: "Lions club of Butwal",
-    location: "Butwal",
-    description: "Calling for all blood donors",
-    date: "23-04-2019"
-  },
-  {
-    id: "107",
-    title: "Blood Donation Camp2",
-    organiser: "Lions club of Saljhandi",
-    location: "Saljhandi",
-    description: "Calling for all blood donors",
-    date: "24-04-2019"
-  },
-  {
-    id: "108",
-    title: "Blood Donation Camp3",
-    organiser: "Lions club of Bhairahawa",
-    location: "Bhairahawa",
-    description: "Calling for all blood donors",
-    date: "26-05-2019"
-  },
-  {
-    id: "109",
-    title: "Blood Donation Camp1",
-    organiser: "Lions club of Butwal",
-    location: "Butwal",
-    description: "Calling for all blood donors",
-    date: "23-04-2019"
-  },
-  {
-    id: "110",
-    title: "Blood Donation Camp2",
-    organiser: "Lions club of Saljhandi",
-    location: "Saljhandi",
-    description: "Calling for all blood donors",
-    date: "24-04-2019"
-  },
-  {
-    id: "111",
-    title: "Blood Donation Camp3",
-    organiser: "Lions club of Bhairahawa",
-    location: "Bhairahawa",
-    description: "Calling for all blood donors",
-    date: "26-05-2019"
-  },
-  {
-    id: "112",
-    title: "Blood Donation Camp1",
-    organiser: "Lions club of Butwal",
-    location: "Butwal",
-    description: "Calling for all blood donors",
-    date: "23-04-2019"
-  },
-  {
-    id: "113",
-    title: "Blood Donation Camp2",
-    organiser: "Lions club of Saljhandi",
-    location: "Saljhandi",
-    description: "Calling for all blood donors",
-    date: "24-04-2019"
-  },
-  {
-    id: "114",
-    title: "Blood Donation Camp3",
-    organiser: "Lions club of Bhairahawa",
-    location: "Bhairahawa",
-    description: "Calling for all blood donors",
-    date: "26-05-2019"
-  },
-  {
-    id: "115",
-    title: "Blood Donation Camp1",
-    organiser: "Lions club of Butwal",
-    location: "Butwal",
-    description: "Calling for all blood donors",
-    date: "23-04-2019"
-  },
-  {
-    id: "116",
-    title: "Blood Donation Camp2",
-    organiser: "Lions club of Saljhandi",
-    location: "Saljhandi",
-    description: "Calling for all blood donors",
-    date: "24-04-2019"
-  },
-  {
-    id: "117",
-    title: "Blood Donation Camp3",
-    organiser: "Lions club of Bhairahawa",
-    location: "Bhairahawa",
-    description: "Calling for all blood donors",
-    date: "26-05-2019"
-  }
-];
+import api from "../../api/api";
+import axios from "axios";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 // deriving top and left position of the add new button
 // respetive to the screen dimension
@@ -170,15 +21,55 @@ const BUTTON_POSITION_TOP = Dimensions.get("screen").height - 165;
 
 class HomeScreen extends React.Component {
   state = {
-    refreshing: false
+    refreshing: false,
+    loading: false,
+    error: null,
+    eventList: null
   };
+
+  // creating instance of API
+  API = api(axios);
 
   // removing default header
   static navigationOptions = {
     header: null
   };
 
+  componentDidMount = async () => {
+    this.setState({ loading: true });
+    // initialize API
+    await this.API.initialize();
+    const events = await this.fetchData();
+    if (events) {
+      setTimeout(() => {
+        this.setState({
+          loading: false,
+          eventList: events
+        });
+      }, 3000);
+    }
+  };
+
+  fetchData = async () => {
+    let events;
+    try {
+      events = await this.API.getEvents();
+      const sortedEvtList = events.sort((item1, item2) => {
+        const date1 = item1.dateSubmitted;
+        const date2 = item2.dateSubmitted;
+        if (date1 < date2) return 1;
+        if (date1 > date2) return -1;
+        // must be equal
+        return 0;
+      });
+      return sortedEvtList;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   handleOnPress = itemId => {
+    const { eventList } = this.state;
     const itemObj = eventList.filter(item => item.id === itemId)[0];
     this.props.navigation.navigate("Details", {
       itemId: itemId,
@@ -187,20 +78,24 @@ class HomeScreen extends React.Component {
   };
 
   handleAddNewPress = () => {
-    this.props.navigation.navigate("Add");
+    this.props.navigation.navigate("Add", {
+      api: this.API,
+      onNavigateBack: this.handleGoBack
+    });
   };
 
   // hanldle FlatList refresh
   handleRefresh = () => {
-    this.setState(
-      {
-        refreshing: true
-      },
-      () => {
-        // this.makeRequest();
-        console.log("API call");
-      }
-    );
+    this.setState({ refreshing: true }, () => {
+      // get the latest event list
+      this.fetchData().then(resolve => {
+        this.setState({ refreshing: false, eventList: resolve });
+      });
+    });
+  };
+
+  handleGoBack = () => {
+    this.handleRefresh();
   };
 
   // FlatList item Renderer
@@ -245,27 +140,48 @@ class HomeScreen extends React.Component {
   };
 
   render() {
+    const { eventList, loading, error } = this.state;
+
+    // error message
+    if (!loading && error) {
+      return (
+        <View style={styles.errorContainer}>Error while fetching events!</View>
+      );
+    }
+
+    if (!loading && eventList) {
+      console.log("eventList", eventList);
+
+      return (
+        <View style={styles.container}>
+          <Text style={{ fontSize: font.LARGE, alignItems: "center" }}>
+            Current Activities
+          </Text>
+          <FlatList
+            data={eventList}
+            keyExtractor={item => item.id}
+            // ItemSeparatorComponent={FlatListItemSeparator}
+            renderItem={this.renderItem}
+            refreshing={this.state.refreshing}
+            onRefresh={this.handleRefresh}
+          />
+          <TouchableOpacity
+            style={styles.addNewButton__wrapper}
+            onPress={this.handleAddNewPress}
+          >
+            <View style={styles.addNewButton}>
+              <Text style={styles.addNewButton__text}>+</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    // Loading indicator
     return (
-      <View style={styles.container}>
-        <Text style={{ fontSize: font.LARGE, alignItems: "center" }}>
-          Current Activities
-        </Text>
-        <FlatList
-          data={eventList}
-          keyExtractor={item => item.id}
-          // ItemSeparatorComponent={FlatListItemSeparator}
-          renderItem={this.renderItem}
-          refreshing={this.state.refreshing}
-          onRefresh={this.handleRefresh}
-        />
-        <TouchableOpacity
-          style={styles.addNewButton__wrapper}
-          onPress={this.handleAddNewPress}
-        >
-          <View style={styles.addNewButton}>
-            <Text style={styles.addNewButton__text}>+</Text>
-          </View>
-        </TouchableOpacity>
+      <View style={styles.loadingContainer}>
+        <FontAwesome name="spinner" size={40} spin="pulse" />
+        <Text>Loading...</Text>
       </View>
     );
   }
@@ -277,6 +193,16 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: color.WHITE,
     justifyContent: "center"
+  },
+  errorContainer: {
+    backgroundColor: color.ERROR_BG,
+    color: color.ERROR,
+    justifyContent: "center"
+  },
+  loadingContainer: {
+    position: "absolute",
+    left: 150,
+    top: 100
   },
   addNewButton__wrapper: {
     position: "absolute",

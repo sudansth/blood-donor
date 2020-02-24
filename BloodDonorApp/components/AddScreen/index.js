@@ -8,13 +8,12 @@ import {
   Picker,
   Switch,
   TouchableHighlight,
-  TouchableWithoutFeedback,
   ActivityIndicator
 } from "react-native";
 import color from "../../utils/color";
 import { font } from "../../utils/font";
 
-const FORM_ITEMS = ["title", "description", "address", "district"];
+const FORM_ITEMS = ["title", "description", "address", "location"];
 
 function checkIfBlank(value) {
   if (value && value.trim() !== "") {
@@ -40,7 +39,7 @@ class AddScreen extends React.Component {
     title: "",
     description: "",
     address: "",
-    district: "",
+    location: "",
     isUrgent: false,
     focusedItem: "",
     dataSubmissionStatus: null,
@@ -49,8 +48,8 @@ class AddScreen extends React.Component {
   picker = React.createRef();
 
   handleValueChange = (input, value) => {
-    console.log("input", input);
-    console.log("value", value);
+    // console.log("input", input);
+    // console.log("value", value);
     this.setState({ [input]: value }, () => this.validateFormItem(input));
   };
 
@@ -75,8 +74,16 @@ class AddScreen extends React.Component {
   handleSubmit = () => {
     if (this.checkIfFormIsValid()) {
       this.setState({ dataSubmissionStatus: "SAVING" });
+      const { title, description, address, location, isUrgent } = this.state;
+      const newEvent = {
+        title,
+        description,
+        address,
+        location,
+        isUrgent
+      };
       // call API to save data
-      this.saveDataToDB();
+      this.saveDataToDB(newEvent);
     }
   };
 
@@ -111,25 +118,43 @@ class AddScreen extends React.Component {
     return errorMsg;
   };
 
-  saveDataToDB = () => {
-    console.log("Saving Data");
+  saveDataToDB = async event => {
+    const { api, onNavigateBack } = this.props.navigation.state.params;
+    let dataSubmissionStatus = "INPROGRESS";
+    let dataSubmissionError;
+
+    try {
+      const response = await api.addEvent(event);
+      dataSubmissionStatus = "COMPLETED";
+      console.log("add-response", response);
+    } catch (error) {
+      dataSubmissionStatus = "ERROR";
+      dataSubmissionError = { code: 401, message: "Server Error" };
+    }
+
     this.setState({
-      dataSubmissionStatus: "COMPLETED",
-      dataSubmissionError: null
+      dataSubmissionStatus: dataSubmissionStatus,
+      dataSubmissionError: dataSubmissionError
     });
     // this.setState({
     //   dataSubmissionStatus: 'ERROR',
     //   dataSubmissionError: 'Error while saving data. (401 - Server Error)'
     // })
-    // display success message
-    // navigate to home
-    this.props.navigation.navigate("Home");
+    if (dataSubmissionStatus === "COMPLETED") {
+      // call onNavigateBack() to trigger reload and rerender
+      onNavigateBack();
+      // navigate to home
+      // React Navigation method to go back
+      this.props.navigation.goBack();
+    }
   };
 
   render() {
     const { error } = this.state;
-    console.log("error", error);
-    console.log("state", this.state);
+    const locationClassNames = [
+      styles.location,
+      error && error.location ? styles.locationError : null
+    ].filter(Boolean);
 
     return (
       <View style={styles.addScreen__container}>
@@ -218,13 +243,12 @@ class AddScreen extends React.Component {
         </View>
         <View>
           <Text>District</Text>
-          <TouchableWithoutFeedback onPress={() => this.focusPicker()}>
+          <View style={locationClassNames}>
             <Picker
               ref={this.picker}
-              style={{ marginBottom: -10, border: "1px solid red" }}
-              selectedValue={this.state.district}
+              selectedValue={this.state.location}
               onValueChange={(itemValue, itemIndex) =>
-                this.handleValueChange("district", itemValue)
+                this.handleValueChange("location", itemValue)
               }
             >
               <Picker.Item
@@ -237,14 +261,12 @@ class AddScreen extends React.Component {
               <Picker.Item label="Kathmandu" value="kathmandu" />
               <Picker.Item label="Narayanghad" value="narayanghad" />
               <Picker.Item label="Chitwan" value="chitwan" />
-              <Picker.Item label="Chitwan1" value="chitwan1" />
-              <Picker.Item label="Chitwan2" value="chitwan2" />
-              <Picker.Item label="Chitwan3" value="chitwan3" />
-              <Picker.Item label="Chitwan4" value="chitwan4" />
+              <Picker.Item label="Pokhara" value="pokhara" />
+              <Picker.Item label="Palpa" value="palpa" />
             </Picker>
-          </TouchableWithoutFeedback>
-          {error && error.district && (
-            <Text style={styles.errorMsg}>{error.district}</Text>
+          </View>
+          {error && error.location && (
+            <Text style={styles.errorMsg}>{error.location}</Text>
           )}
         </View>
         <View style={styles.isUrgent}>
@@ -317,6 +339,15 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     marginLeft: 5,
     color: color.APP_BRAND_DARK
+  },
+  location: {
+    paddingBottom: -5,
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: color.GREY_LIGHT
+  },
+  locationError: {
+    borderBottomColor: color.APP_BRAND_DARKER
   },
   pickerWrapper: {
     borderBottomWidth: 1,
