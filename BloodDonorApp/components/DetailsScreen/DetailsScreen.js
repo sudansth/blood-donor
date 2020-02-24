@@ -46,7 +46,7 @@ class DetailsScreen extends React.Component {
               <FontAwesome5 name="map-marker-alt" size={20} light />
             </View>
             <View style={styles.itemSeperation__rightItem}>
-              <Text style={styles.baseStyles}>{itemObj.fullAddress}</Text>
+              <Text style={styles.baseStyles}>{itemObj.address}</Text>
             </View>
           </View>
         </View>

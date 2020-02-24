@@ -4,7 +4,7 @@ const eventList = [
     title: "Blood Donation Camp1",
     organiser: "Lions club of Butwal",
     location: "Butwal",
-    fullAddress: "Lions Club, Pari Butwal, Butwal",
+    address: "Lions Club, Pari Butwal, Butwal",
     description: "Calling for all blood donors",
     date: "23-04-2020",
     dateSubmitted: 1582170586597
@@ -14,7 +14,7 @@ const eventList = [
     title: "A+ Blood required urgently",
     organiser: "Requester Name",
     location: "Bhairahawa",
-    fullAddress: "UCMS Hospital, Buddha Path, Bhairahawa",
+    address: "UCMS Hospital, Buddha Path, Bhairahawa",
     description: "Calling for all blood donors",
     date: "24-04-2020",
     dateSubmitted: 1582170604526
@@ -25,7 +25,7 @@ const eventList = [
       "Blood Donation Camp2 Long Title To Test the Max length of the title1 title2 title3 title4",
     organiser: "Lions club of Bhairahawa",
     location: "Bhairahawa",
-    fullAddress: "UCMS Hospital, Buddha Path, Bhairahawa",
+    address: "UCMS Hospital, Buddha Path, Bhairahawa",
     description: "Calling for all blood donors",
     date: "26-05-2020",
     dateSubmitted: 1582170660748
@@ -35,7 +35,7 @@ const eventList = [
     title: "Blood Donation Camp1",
     organiser: "Lions club of Butwal",
     location: "Butwal",
-    fullAddress: "Lions Club, Pari Butwal, Butwal",
+    address: "Lions Club, Pari Butwal, Butwal",
     description: "Calling for all blood donors",
     date: "23-04-2020",
     dateSubmitted: 1582170674998
