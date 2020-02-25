@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   ActivityIndicator
 } from "react-native";
+import DatePicker from "react-native-datepicker";
 import color from "../../utils/color";
 import { font } from "../../utils/font";
 
@@ -40,6 +41,7 @@ class AddScreen extends React.Component {
     description: "",
     address: "",
     location: "",
+    date: null,
     isUrgent: false,
     focusedItem: "",
     dataSubmissionStatus: null,
@@ -74,12 +76,20 @@ class AddScreen extends React.Component {
   handleSubmit = () => {
     if (this.checkIfFormIsValid()) {
       this.setState({ dataSubmissionStatus: "SAVING" });
-      const { title, description, address, location, isUrgent } = this.state;
+      const {
+        title,
+        description,
+        address,
+        location,
+        date,
+        isUrgent
+      } = this.state;
       const newEvent = {
         title,
         description,
         address,
         location,
+        date,
         isUrgent
       };
       // call API to save data
@@ -136,10 +146,7 @@ class AddScreen extends React.Component {
       dataSubmissionStatus: dataSubmissionStatus,
       dataSubmissionError: dataSubmissionError
     });
-    // this.setState({
-    //   dataSubmissionStatus: 'ERROR',
-    //   dataSubmissionError: 'Error while saving data. (401 - Server Error)'
-    // })
+
     if (dataSubmissionStatus === "COMPLETED") {
       // call onNavigateBack() to trigger reload and rerender
       onNavigateBack();
@@ -268,6 +275,24 @@ class AddScreen extends React.Component {
           {error && error.location && (
             <Text style={styles.errorMsg}>{error.location}</Text>
           )}
+        </View>
+        <View>
+          <Text>Required by</Text>
+          <DatePicker
+            style={{ width: 200 }}
+            format="DD-MM-YYYY"
+            date={this.state.date}
+            customStyles={{
+              dateInput: {
+                borderWidth: 0,
+                borderBottomWidth: 1,
+                borderBottomColor: color.GREY_LIGHT
+              }
+            }}
+            onDateChange={date => {
+              this.setState({ date: date });
+            }}
+          />
         </View>
         <View style={styles.isUrgent}>
           <Text>Is Urgent?</Text>
