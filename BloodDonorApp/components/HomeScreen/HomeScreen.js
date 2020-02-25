@@ -16,8 +16,9 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 // deriving top and left position of the add new button
 // respetive to the screen dimension
-const BUTTON_POSITION = Dimensions.get("screen").width - 60;
-const BUTTON_POSITION_TOP = Dimensions.get("screen").height - 165;
+const BUTTON_POSITION = Dimensions.get("screen").width - 50;
+const screenHeight = Dimensions.get("screen").height;
+const BUTTON_POSITION_TOP = screenHeight - (screenHeight > 800 ? 190 : 165);
 
 class HomeScreen extends React.Component {
   state = {
