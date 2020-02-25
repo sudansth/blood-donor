@@ -14,7 +14,7 @@ import DatePicker from "react-native-datepicker";
 import color from "../../utils/color";
 import { font } from "../../utils/font";
 
-const FORM_ITEMS = ["title", "description", "address", "location"];
+const FORM_ITEMS = ["title", "description", "address", "location", "date"];
 
 function checkIfBlank(value) {
   if (value && value.trim() !== "") {
@@ -41,7 +41,7 @@ class AddScreen extends React.Component {
     description: "",
     address: "",
     location: "",
-    date: null,
+    date: "",
     isUrgent: false,
     focusedItem: "",
     dataSubmissionStatus: null,
@@ -50,8 +50,6 @@ class AddScreen extends React.Component {
   picker = React.createRef();
 
   handleValueChange = (input, value) => {
-    // console.log("input", input);
-    // console.log("value", value);
     this.setState({ [input]: value }, () => this.validateFormItem(input));
   };
 
@@ -60,12 +58,10 @@ class AddScreen extends React.Component {
   };
 
   handleBlur = input => {
-    console.log("blur input", input);
     this.setState({ focusedItem: "" });
   };
 
   focusPicker = () => {
-    console.log("focusPicker");
     this.picker.current.focus();
   };
 
@@ -136,7 +132,6 @@ class AddScreen extends React.Component {
     try {
       const response = await api.addEvent(event);
       dataSubmissionStatus = "COMPLETED";
-      console.log("add-response", response);
     } catch (error) {
       dataSubmissionStatus = "ERROR";
       dataSubmissionError = { code: 401, message: "Server Error" };
@@ -160,7 +155,7 @@ class AddScreen extends React.Component {
     const { error } = this.state;
     const locationClassNames = [
       styles.location,
-      error && error.location ? styles.locationError : null
+      error && error.location ? styles.inputError : null
     ].filter(Boolean);
 
     return (
@@ -259,8 +254,12 @@ class AddScreen extends React.Component {
               }
             >
               <Picker.Item
-                color={color.GREY_NORMAL}
-                label="Select.."
+                color={
+                  error && error.location
+                    ? color.APP_BRAND_DARKER
+                    : color.GREY_NORMAL
+                }
+                label="Select district.."
                 value=""
               />
               <Picker.Item label="Butwal" value="butwal" />
@@ -279,20 +278,34 @@ class AddScreen extends React.Component {
         <View>
           <Text>Required by</Text>
           <DatePicker
-            style={{ width: 200 }}
+            style={styles.date}
             format="DD-MM-YYYY"
             date={this.state.date}
+            mode="date"
+            placeholder="Select date"
+            androidMode="spinner"
+            minDate={getCurrentDate()}
             customStyles={{
               dateInput: {
                 borderWidth: 0,
                 borderBottomWidth: 1,
-                borderBottomColor: color.GREY_LIGHT
+                borderBottomColor:
+                  error && error.date
+                    ? color.APP_BRAND_DARKER
+                    : color.GREY_LIGHT
+              },
+              placeholderText: {
+                color:
+                  error && error.date
+                    ? color.APP_BRAND_DARKER
+                    : color.GREY_NORMAL
               }
             }}
-            onDateChange={date => {
-              this.setState({ date: date });
-            }}
+            onDateChange={date => this.handleValueChange("date", date)}
           />
+          {error && error.date && (
+            <Text style={styles.errorMsg}>{error.date}</Text>
+          )}
         </View>
         <View style={styles.isUrgent}>
           <Text>Is Urgent?</Text>
@@ -349,6 +362,21 @@ class AddScreen extends React.Component {
 
 export default AddScreen;
 
+//  ### Util Functions   ###
+// get currrent date in 'DD-MM-YYYY' format
+getCurrentDate = () => {
+  const current_datetime = new Date();
+  const month = current_datetime.getMonth() + 1;
+  const monthsWithLeadingZero = month <= 9 ? "0" + month : month;
+  return (
+    current_datetime.getDate() +
+    "-" +
+    monthsWithLeadingZero +
+    "-" +
+    current_datetime.getFullYear()
+  );
+};
+
 const styles = StyleSheet.create({
   addScreen__container: {
     padding: 30
@@ -371,12 +399,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: color.GREY_LIGHT
   },
-  locationError: {
+  inputError: {
     borderBottomColor: color.APP_BRAND_DARKER
   },
   pickerWrapper: {
     borderBottomWidth: 1,
     borderBottomColor: color.BLUE_LIGHT
+  },
+  date: {
+    marginBottom: 8
   },
   isUrgent: {
     marginTop: 10,
