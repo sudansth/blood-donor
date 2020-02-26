@@ -177,7 +177,7 @@ class AddScreen extends React.Component {
 
     return (
       <View style={styles.addScreen__container}>
-        <View>
+        <View style={styles.formItem}>
           <Text>Title</Text>
           <TextInput
             name="title"
@@ -205,7 +205,7 @@ class AddScreen extends React.Component {
             <Text style={styles.errorMsg}>{error["title"]}</Text>
           )}
         </View>
-        <View>
+        <View style={styles.formItem}>
           <Text>Description</Text>
           <TextInput
             name="description"
@@ -235,11 +235,12 @@ class AddScreen extends React.Component {
             <Text style={styles.errorMsg}>{error.description}</Text>
           )}
         </View>
-        <View>
+        <View style={styles.formItem}>
           <Text>Address</Text>
           <TextInput
             name="address"
             placeholder="Enter Address"
+            style={styles.textInput}
             underlineColorAndroid={
               this.state.focusedItem === "address"
                 ? color.BLUE_LIGHT
@@ -260,8 +261,8 @@ class AddScreen extends React.Component {
             <Text style={styles.errorMsg}>{error.address}</Text>
           )}
         </View>
-        <View>
-          <Text>District</Text>
+        <View style={styles.formItem}>
+          <Text style={{ marginBottom: -10 }}>District</Text>
           <View style={locationClassNames}>
             <Picker
               ref={this.picker}
@@ -277,7 +278,7 @@ class AddScreen extends React.Component {
                     ? color.APP_BRAND_DARKER
                     : color.GREY_NORMAL
                 }
-                label="Select district.."
+                label="Select district"
                 value=""
               />
               <Picker.Item label="Butwal" value="butwal" />
@@ -293,8 +294,8 @@ class AddScreen extends React.Component {
             <Text style={styles.errorMsg}>{error.location}</Text>
           )}
         </View>
-        <View>
-          <Text>Required by</Text>
+        <View style={styles.formItem}>
+          <Text style={{ marginBottom: 2 }}>Required by</Text>
           <DatePicker
             style={styles.date}
             format="DD-MM-YYYY"
@@ -305,6 +306,9 @@ class AddScreen extends React.Component {
             minDate={getCurrentDate()}
             customStyles={{
               dateInput: {
+                alignItems: "flex-start",
+                paddingHorizontal: 5,
+                paddingTop: 12,
                 borderWidth: 0,
                 borderBottomWidth: 1,
                 borderBottomColor:
@@ -313,19 +317,29 @@ class AddScreen extends React.Component {
                     : color.GREY_LIGHT
               },
               placeholderText: {
+                textAlign: "right",
+                fontSize: 16,
                 color:
                   error && error.date
                     ? color.APP_BRAND_DARKER
                     : color.GREY_NORMAL
+              },
+              dateText: {
+                fontSize: 16
+              },
+              dateIcon: {
+                height: 30
               }
             }}
-            onDateChange={date => this.handleValueChange("date", date)}
+            onDateChange={date => {
+              this.handleValueChange("date", date);
+            }}
           />
           {error && error.date && (
             <Text style={styles.errorMsg}>{error.date}</Text>
           )}
         </View>
-        <View style={styles.isUrgent}>
+        <View style={[styles.formItem, styles.isUrgent]}>
           <Text>Is Urgent?</Text>
           <View style={styles.isUrgent__switch}>
             <Switch
@@ -399,8 +413,13 @@ const styles = StyleSheet.create({
   addScreen__container: {
     padding: 30
   },
+  formItem: {
+    marginBottom: 8
+  },
   textInput: {
-    height: 40
+    height: 40,
+    fontSize: 15,
+    paddingLeft: 8
   },
   textInput__multiLine: {
     maxHeight: 200
@@ -412,8 +431,9 @@ const styles = StyleSheet.create({
     color: color.APP_BRAND_DARK
   },
   location: {
-    paddingBottom: -5,
-    marginBottom: 8,
+    height: 45,
+    marginTop: 1,
+    marginBottom: 6,
     borderBottomWidth: 1,
     borderBottomColor: color.GREY_LIGHT
   },
@@ -425,10 +445,11 @@ const styles = StyleSheet.create({
     borderBottomColor: color.BLUE_LIGHT
   },
   date: {
-    marginBottom: 8
+    width: 200,
+    height: 40,
+    marginBottom: 6
   },
   isUrgent: {
-    marginTop: 10,
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start"
