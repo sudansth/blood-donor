@@ -50,7 +50,24 @@ class AddScreen extends React.Component {
   picker = React.createRef();
 
   handleValueChange = (input, value) => {
-    this.setState({ [input]: value }, () => this.validateFormItem(input));
+    // save dato to the state
+    saveValueToState = (field, data) => {
+      this.setState(
+        { [field]: data },
+        // Also validate form item
+        () => {
+          this.validateFormItem(field);
+        }
+      );
+    };
+
+    // have to handle differently as <Picker/> component is firing
+    // onValueChange() multiple time for single value change
+    if (input === "location" && value !== "") {
+      saveValueToState(input, value);
+    } else if (input !== "location") {
+      saveValueToState(input, value);
+    }
   };
 
   handleFocus = input => {
@@ -249,9 +266,10 @@ class AddScreen extends React.Component {
             <Picker
               ref={this.picker}
               selectedValue={this.state.location}
-              onValueChange={(itemValue, itemIndex) =>
-                this.handleValueChange("location", itemValue)
-              }
+              style={{ marginTop: 5, marginLeft: 1 }}
+              onValueChange={(itemValue, itemIndex) => {
+                this.handleValueChange("location", itemValue);
+              }}
             >
               <Picker.Item
                 color={
