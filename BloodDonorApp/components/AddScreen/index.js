@@ -142,7 +142,7 @@ class AddScreen extends React.Component {
   };
 
   saveDataToDB = async event => {
-    const { api, onNavigateBack } = this.props.navigation.state.params;
+    const { api, onNavigateBack } = this.props.route.params;
     let dataSubmissionStatus = "INPROGRESS";
     let dataSubmissionError;
 

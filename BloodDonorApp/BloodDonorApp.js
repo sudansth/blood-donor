@@ -1,9 +1,7 @@
 import React from "react";
-import {
-  createBottomTabNavigator,
-  createStackNavigator,
-  createAppContainer
-} from "react-navigation";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
 import SearchScreen from "./components/SearchScreen/SearchScreen";
 import SettingsScreen from "./components/SettingsScreen/SettingsScreen";
@@ -13,54 +11,74 @@ import AddScreen from "./components/AddScreen";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 // creating stack of the possible navigations from Home Screen
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-  Details: DetailsScreen,
-  Add: AddScreen
-});
-
-// Removing tab bar from the Details Screen
-HomeStack.navigationOptions = ({ navigation }) => {
-  let tabBarVisible = true;
-  if (navigation.state.index > 0) {
-    tabBarVisible = false;
-  }
-
-  return {
-    tabBarVisible
-  };
+const Stack = createStackNavigator();
+const HomeStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Screen
+        name="Add"
+        component={AddScreen}
+        options={{ headerTitle: "Post blood request" }}
+      />
+    </Stack.Navigator>
+  );
 };
 
-const TabNavigator = createBottomTabNavigator(
-  {
-    Home: HomeStack,
-    Search: SearchScreen,
-    Settings: SettingsScreen
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        let iconName;
-        if (routeName === "Home") {
-          iconName = "home";
-        } else if (routeName === "Search") {
-          iconName = "search";
-        } else if (routeName === "Settings") {
-          iconName = "sliders-h";
-        }
+// Removing tab bar from the "Details" and "Add" Screen
+const getTabBarVisible = route => {
+  const routeName = route.state
+    ? route.state.routes[route.state.index].name
+    : route.params?.screen || "Home";
 
-        // You can return any component that you like here!
-        return (
-          <FontAwesome5 name={iconName} size={25} color={tintColor} light />
-        );
-      }
-    }),
-    tabBarOptions: {
-      activeTintColor: "tomato", //'#FF3333',
-      inactiveTintColor: "gray"
-    }
-  }
-);
+  return !(routeName === "Add" || routeName === "Details");
+};
 
-export default createAppContainer(TabNavigator);
+const BottomTabNav = createBottomTabNavigator();
+
+const BloodDonorApp = () => {
+  return (
+    <NavigationContainer>
+      <BottomTabNav.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === "Home") {
+              iconName = "home";
+            } else if (route.name === "Search") {
+              iconName = "search";
+            } else if (route.name === "Settings") {
+              iconName = "sliders-h";
+            }
+
+            // You can return any component that you like here!
+            return (
+              <FontAwesome5 name={iconName} size={25} color={color} light />
+            );
+          }
+        })}
+        tabBarOptions={{
+          activeTintColor: "tomato", //'#FF3333',
+          inactiveTintColor: "gray"
+        }}
+      >
+        <BottomTabNav.Screen
+          name="Home"
+          component={HomeStack}
+          options={({ route }) => ({
+            tabBarVisible: getTabBarVisible(route)
+          })}
+        />
+        <BottomTabNav.Screen name="Search" component={SearchScreen} />
+        <BottomTabNav.Screen name="Settings" component={SettingsScreen} />
+      </BottomTabNav.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default BloodDonorApp;

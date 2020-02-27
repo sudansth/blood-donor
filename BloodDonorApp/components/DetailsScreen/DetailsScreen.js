@@ -15,9 +15,7 @@ class DetailsScreen extends React.Component {
   };
 
   render() {
-    const { navigation } = this.props;
-    const itemId = navigation.getParam("itemId", "NO-ID");
-    const itemObj = navigation.getParam("item", null);
+    const { item } = this.props.route.params;
 
     return (
       <View style={styles.DetailsScreen}>
@@ -26,17 +24,17 @@ class DetailsScreen extends React.Component {
           source={require("../../../assets/no-image.png")}
         />
         <View style={styles.infoWrapper}>
-          <Text style={styles.title}>{itemObj.title}</Text>
-          <Text>by {itemObj.organiser}</Text>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text>by {item.organiser}</Text>
           <Text style={[styles.baseStyles, styles.description]}>
-            {itemObj.description}
+            {item.description}
           </Text>
           <View style={[styles.baseStyles, styles.itemSeperation, styles.date]}>
             <View>
               <FontAwesome5 name="calendar-alt" size={18} light />
             </View>
             <View style={styles.itemSeperation__rightItem}>
-              <Text>{itemObj.date}</Text>
+              <Text>{item.date}</Text>
             </View>
           </View>
           <View
@@ -46,7 +44,7 @@ class DetailsScreen extends React.Component {
               <FontAwesome5 name="map-marker-alt" size={20} light />
             </View>
             <View style={styles.itemSeperation__rightItem}>
-              <Text style={styles.baseStyles}>{itemObj.address}</Text>
+              <Text style={styles.baseStyles}>{item.address}</Text>
             </View>
           </View>
         </View>
