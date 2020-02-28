@@ -119,11 +119,19 @@ class HomeScreen extends React.Component {
               ellipsizeMode="tail"
               numberOfLines={2}
             >
-              {" "}
-              {item.title}{" "}
+              {item.title}
             </Text>
           </View>
-          <Text> {item.organiser} </Text>
+          <View style={styles.activity__info__organiserUrgentWrapper}>
+            <Text style={styles.activity__info__organiser}>
+              {item.organiser}
+            </Text>
+            {item.isUrgent && (
+              <View style={styles.activity__info__isUrgent}>
+                <Text style={styles.activity__info__isUrgent_text}>Urgent</Text>
+              </View>
+            )}
+          </View>
           <View style={styles.activity__info__dateLocationWrapper}>
             <Text> {item.date} </Text>
             <Text> {item.location} </Text>
@@ -192,7 +200,7 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: color.WHITE,
+    backgroundColor: color.BG_HIGHLIGHT_LIGHT,
     justifyContent: "center"
   },
   errorContainer: {
@@ -205,34 +213,16 @@ const styles = StyleSheet.create({
     left: 150,
     top: 100
   },
-  addNewButton__wrapper: {
-    position: "absolute",
-    top: BUTTON_POSITION_TOP,
-    bottom: 0,
-    left: BUTTON_POSITION
-  },
-  addNewButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 150 / 2,
-    backgroundColor: color.APP_BRAND_DARK,
-    alignItems: "center"
-  },
-  addNewButton__text: {
-    color: color.BG_WHITE,
-    fontSize: font.XXXL,
-    top: -9
-  },
   activity_container: {
     width: "90%",
     flex: 1,
     flexDirection: "row",
-    backgroundColor: color.BG_HIGHLIGHT_LIGHT,
+    backgroundColor: color.WHITE,
     marginTop: 5,
     marginLeft: 15,
     marginBottom: 5,
-    borderRadius: 8,
-    elevation: 4
+    borderRadius: 5,
+    elevation: 5
   },
   activity__image: {
     width: "15%"
@@ -250,10 +240,49 @@ const styles = StyleSheet.create({
     color: color.FONT_COLOR_DARK,
     fontWeight: "bold"
   },
+  activity__info__organiserUrgentWrapper: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  activity__info__organiser: {
+    flex: 2,
+    marginLeft: 4
+  },
+  activity__info__isUrgent: {
+    flex: 1,
+    marginRight: 10,
+    marginLeft: 20,
+    borderTopLeftRadius: 8,
+    borderBottomLeftRadius: 8,
+    backgroundColor: color.APP_BRAND_LIGHTER
+  },
+  activity__info__isUrgent_text: {
+    textAlign: "center",
+    color: color.APP_BRAND_DARK,
+    fontWeight: "bold"
+  },
   activity__info__dateLocationWrapper: {
     width: "95%",
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between"
+  },
+  addNewButton__wrapper: {
+    position: "absolute",
+    top: BUTTON_POSITION_TOP,
+    bottom: 0,
+    left: BUTTON_POSITION
+  },
+  addNewButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 150 / 2,
+    backgroundColor: color.APP_BRAND_DARK,
+    alignItems: "center"
+  },
+  addNewButton__text: {
+    color: color.WHITE,
+    fontSize: font.XXXL,
+    top: -9
   }
 });

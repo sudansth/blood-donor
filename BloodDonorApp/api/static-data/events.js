@@ -74,7 +74,8 @@ const eventList = [
     location: "Saljhandi",
     description: "Calling for all blood donors",
     date: "24-04-2020",
-    dateSubmitted: 1582170720025
+    dateSubmitted: 1582170720025,
+    isUrgent: true
   },
   {
     id: "108",
