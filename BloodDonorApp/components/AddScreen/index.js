@@ -360,12 +360,14 @@ class AddScreen extends React.Component {
             <TouchableHighlight
               style={[styles.actionBtn, styles.cancelBtn__wrapper]}
               onPress={() => this.handleCancel()}
+              underlayColor={color.GREY_LIGHT}
             >
               <Text style={styles.cancelBtn}>Cancel</Text>
             </TouchableHighlight>
             <TouchableHighlight
               style={[styles.actionBtn, styles.submitBtn__wrapper]}
               onPress={() => this.handleSubmit()}
+              underlayColor={color.APP_BRAND_DARK}
             >
               <Text style={styles.submitBtn}>Submit</Text>
             </TouchableHighlight>
@@ -480,21 +482,22 @@ const styles = StyleSheet.create({
   actionBtn: {
     padding: 5,
     width: 100,
-    alignItems: "center"
+    alignItems: "center",
+    borderRadius: 5
   },
   cancelBtn__wrapper: {
-    borderWidth: 2,
-    borderColor: color.GREY_LIGHT
+    borderWidth: 1,
+    borderColor: color.GREY_NORMAL
   },
   cancelBtn: {
     color: color.FONT_COLOR_DARK
   },
   submitBtn__wrapper: {
-    backgroundColor: color.APP_BRAND_LIGHT,
+    backgroundColor: color.APP_BRAND_DARKER,
     marginLeft: 20
   },
   submitBtn: {
-    color: color.BG_WHITE,
+    color: color.WHITE,
     fontSize: font.MEDIUM
   },
   loadingIndicator: {
